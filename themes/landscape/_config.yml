@@ -5,6 +5,7 @@
 menu:
   Home: /
   Archives: /archives
+  Admin: /admin
 # RSS link
 rss: /atom.xml
 # Path of title banner image of page top
