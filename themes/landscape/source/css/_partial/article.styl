@@ -68,15 +68,20 @@
     border: none
   table
     width: 100%
+    table-layout: fixed
     border-collapse: collapse
     border-spacing: 0
   th
     font-weight: bold
+    border: 1px solid color-border
     border-bottom: 3px solid color-border
-    padding-bottom: 0.5em
+    padding: 0.5em 8px
+  th:first-child, td:first-child
+    width: 17%
+    word-break: keep-all
   td
-    border-bottom: 1px solid color-border
-    padding: 10px 0
+    border: 1px solid color-border
+    padding: 10px 8px
   blockquote
     font-family: font-serif
     margin: line-height 20px
