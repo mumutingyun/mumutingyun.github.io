@@ -152,3 +152,39 @@ $nav-link
   cursor: pointer
   &:hover, &:focus
     color: #777
+
+#local-search-result
+  position: absolute
+  top: 100%
+  left: 0
+  right: 0
+  margin-top: 5px
+  background: #fff
+  border-radius: 6px
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15)
+  max-height: 320px
+  overflow-y: auto
+  z-index: 100
+  &.local-search-result-closed
+    display: none
+
+.search-result-item
+  display: block
+  padding: 10px 16px
+  color: color-default
+  text-decoration: none
+  border-bottom: 1px solid #f0f0f0
+  &:last-child
+    border-bottom: none
+  &:hover
+    background: #f5f7fa
+
+.search-result-title
+  font-size: 13px
+  line-height: 1.4
+
+.search-result-empty
+  padding: 20px 16px
+  text-align: center
+  color: #999
+  font-size: 13px

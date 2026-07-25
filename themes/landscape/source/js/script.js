@@ -1,6 +1,9 @@
 (function($){
-  // Search
+  // Local Search
   var $searchWrap = $('#search-form-wrap'),
+    $searchInput = $('.search-form-input'),
+    $searchResult = $('#local-search-result'),
+    searchData = null,
     isSearchAnim = false,
     searchAnimDuration = 200;
 
@@ -15,21 +18,70 @@
     }, searchAnimDuration);
   };
 
+  // Load search data
+  $.getJSON('/search.json', function(data){
+    searchData = data;
+  });
+
+  // Show search box
   $('.nav-search-btn').on('click', function(){
     if (isSearchAnim) return;
-
     startSearchAnim();
     $searchWrap.addClass('on');
-    stopSearchAnim(function(){
-      $('.search-form-input').focus();
-    });
-  });
-
-  $('.search-form-input').on('blur', function(){
-    startSearchAnim();
-    $searchWrap.removeClass('on');
+    $searchInput.val('').focus();
+    $searchResult.addClass('local-search-result-closed').empty();
     stopSearchAnim();
   });
+
+  // Hide search box on blur (with delay for result click)
+  $searchInput.on('blur', function(){
+    setTimeout(function(){
+      if ($searchResult.find('a:hover').length === 0) {
+        startSearchAnim();
+        $searchWrap.removeClass('on');
+        $searchResult.addClass('local-search-result-closed').empty();
+        stopSearchAnim();
+      }
+    }, 200);
+  });
+
+  // Search on input
+  var searchTimer;
+  $searchInput.on('input', function(){
+    clearTimeout(searchTimer);
+    var keyword = $(this).val().trim().toLowerCase();
+    if (!keyword) {
+      $searchResult.addClass('local-search-result-closed').empty();
+      return;
+    }
+    if (!searchData) return;
+
+    searchTimer = setTimeout(function(){
+      var results = [];
+      $.each(searchData, function(i, item){
+        var title = (item.title || '').toLowerCase();
+        var content = (item.text || '').toLowerCase();
+        if (title.indexOf(keyword) > -1 || content.indexOf(keyword) > -1) {
+          results.push(item);
+        }
+      });
+
+      if (results.length === 0) {
+        $searchResult.removeClass('local-search-result-closed').html('<div class="search-result-empty">未找到相关文章</div>');
+      } else {
+        var html = '';
+        $.each(results, function(i, item){
+          html += '<a class="search-result-item" href="' + item.url + '">' +
+            '<span class="search-result-title">' + item.title + '</span>' +
+            '</a>';
+        });
+        $searchResult.removeClass('local-search-result-closed').html(html);
+      }
+    }, 200);
+  });
+
+  // Prevent form submit
+  $('.search-form').on('submit', function(e){ e.preventDefault(); });
 
   // Share
   $('body').on('click', function(){
