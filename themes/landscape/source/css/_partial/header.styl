@@ -154,17 +154,14 @@ $nav-link
     color: #777
 
 #local-search-result
-  position: absolute
-  top: 100%
-  left: 0
-  right: 0
-  margin-top: 5px
+  position: fixed
   background: #fff
   border-radius: 6px
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15)
   max-height: 320px
   overflow-y: auto
-  z-index: 100
+  z-index: 1000
+  min-width: 200px
   &.local-search-result-closed
     display: none
 

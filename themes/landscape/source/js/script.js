@@ -66,6 +66,16 @@
         }
       });
 
+      // Position the result dropdown relative to the search input
+      var offset = $searchInput.offset();
+      var inputHeight = $searchInput.outerHeight();
+      var inputWidth = $searchInput.outerWidth();
+      $searchResult.css({
+        top: offset.top + inputHeight + 5,
+        left: offset.left,
+        width: Math.max(inputWidth, 200)
+      });
+
       if (results.length === 0) {
         $searchResult.removeClass('local-search-result-closed').html('<div class="search-result-empty">未找到相关文章</div>');
       } else {
