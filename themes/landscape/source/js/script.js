@@ -60,7 +60,7 @@
       var results = [];
       $.each(searchData, function(i, item){
         var title = (item.title || '').toLowerCase();
-        var content = (item.text || '').toLowerCase();
+        var content = (item.content || '').toLowerCase();
         if (title.indexOf(keyword) > -1 || content.indexOf(keyword) > -1) {
           results.push(item);
         }
