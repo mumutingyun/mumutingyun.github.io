@@ -112,3 +112,12 @@ deploy:
   type: git
   repo: https://github.com/mumutingyun/mumutingyun.github.io.git
   branch: main
+
+# MathJax (LaTeX 数学公式渲染)
+mathjax:
+  tags: none
+  single_dollars: true
+  cjk_width: 0.9
+  normal_width: 0.6
+  append_css: true
+  every_page: false
