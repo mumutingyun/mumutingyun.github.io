@@ -1,0 +1,11 @@
+{
+  "newLinkFormat": "relative",
+  "useMarkdownLinks": true,
+  "attachmentFolderPath": "images",
+  "showUnsupportedFiles": true,
+  "promptDelete": false,
+  "alwaysUpdateLinks": true,
+  "defaultViewMode": "source",
+  "showLineNumber": false,
+  "readableLineLength": false
+}
