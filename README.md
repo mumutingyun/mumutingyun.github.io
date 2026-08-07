@@ -11,7 +11,7 @@
 | **框架** | [Hexo](https://hexo.io/) v8.1.2 |
 | **主题** | Landscape（Hexo 默认主题） |
 | **代码托管** | GitHub: `mumutingyun/mumutingyun.github.io`，分支 `main` |
-| **域名** | `mumutingyun.site`（通过 Cloudflare 绑定到 GitHub Pages） |
+| **域名** | `mumutingyun.site`（Cloudflare Pages，自动从 GitHub main 分支构建） |
 | **本地路径** | `/home/wsluser/blog`（WSL Ubuntu） |
 | **写作语言** | 中文 (zh-CN) |
 
@@ -21,21 +21,19 @@
 
 ### 站点信息
 - **站点 URL**: `https://mumutingyun.site`
-- **永久链接格式**: `:year/:month/:day/:title/`（如 `2026/07/24/示波器学习笔记2/`）
+- **永久链接格式**: `:year/:month/:day/:title/`
 
 ### 关键开关
-- **`post_asset_folder: false`** — 没有为每篇文章自动创建同名资源目录，图片统一放在 `source/images/`
-- **`relative_link: false`** — 使用绝对路径
-- **`skip_render: "admin/*"`** — `source/admin/` 目录下的文件不做渲染（为 Decap CMS 预留）
+- **`post_asset_folder: false`** — 图片统一放在 `source/images/`
+- **`skip_render: "admin/*"`** — Decap CMS 入口保护
 
 ### 部署
-```
-deploy:
-  type: git
-  repo: https://github.com/mumutingyun/mumutingyun.github.io.git
-  branch: main
-```
-执行 `hexo deploy` 会将 `public/` 推送到 GitHub Pages 仓库。
+博客由 **Cloudflare Pages** 自动构建：
+1. `git push origin main` → GitHub
+2. Cloudflare Pages 检测变更 → 自动 `hexo generate` → 部署上线
+3. 1-2 分钟后生效
+
+⚠️ 不要执行 `hexo deploy`，已被弃用。
 
 ---
 
@@ -43,26 +41,16 @@ deploy:
 
 | 插件 | 用途 |
 |-----|------|
-| `hexo-deployer-git` | 部署到 GitHub Pages |
-| `hexo-admin` | 自带的本地 Web 管理后台（启动 `hexo server` 后访问） |
-| `hexo-generator-searchdb` | 生成 `search.json`，支持站内全文搜索 |
-| `hexo-generator-feed` | 生成 RSS/Atom 订阅 |
-| `hexo-generator-sitemap` | 生成 sitemap.xml |
-| `hexo-filter-mathjax` | LaTeX 数学公式渲染 |
-| `hexo-filter-mermaid-diagrams` | Mermaid 流程图/时序图渲染 |
-| `hexo-renderer-ejs` | EJS 模板引擎 |
+| `hexo-deployer-git` | （已弃用，但保留） |
+| `hexo-admin` | 本地 Web 管理后台 |
+| `hexo-generator-searchdb` | 站内全文搜索 |
+| `hexo-generator-feed` | RSS/Atom 订阅 |
+| `hexo-generator-sitemap` | sitemap.xml |
+| `hexo-filter-mathjax` | LaTeX 数学公式 |
+| `hexo-filter-mermaid-diagrams` | Mermaid 图表 |
+| `hexo-renderer-ejs` | EJS 模板 |
 | `hexo-renderer-marked` | Markdown 渲染 |
-| `hexo-renderer-stylus` | Stylus CSS 预处理器 |
-
----
-
-## 四、主题 Landscape
-
-**配置文件**: `themes/landscape/_config.yml`
-
-- 导航菜单：Home、Archives、Updates
-- 侧边栏：右侧，包含分类/标签/归档/最近文章
-- fancybox 灯箱已启用
+| `hexo-renderer-stylus` | Stylus CSS |
 
 ---
 
@@ -74,131 +62,67 @@ blog/
 ├── package.json
 ├── .vscode/
 │   └── settings.json        # VS Code Paste Image 插件配置
-├── deploy.bat               # Windows 一键部署脚本
+├── deploy.bat               # Windows 一键发布脚本
+├── sync-obsidian.bat        # Obsidian 镜像同步脚本
 ├── source/
 │   ├── .obsidian/           # Obsidian Vault 配置
-│   │   ├── app.json
-│   │   └── appearance.json
 │   ├── _posts/              # 所有文章（Markdown）
-│   │   ├── hello-world.md
-│   │   ├── 操作指南.md
-│   │   ├── 示波器学习笔记1.md
-│   │   ├── 示波器学习笔记2.md
-│   │   └── 示波器学习笔记3.md
 │   ├── images/              # 共用图片目录
-│   ├── updates/             # 自定义页面 /updates
-│   │   ├── index.html
-│   │   └── config.yml       # Decap CMS 配置文件
-│   └── admin/               # Decap CMS 入口（跳过渲染）
-│       └── index.html
+│   ├── updates/             # Decap CMS 配置页面
+│   └── admin/               # Decap CMS 入口
 ├── themes/landscape/        # 主题文件
-├── public/                  # `hexo generate` 生成（deploy 时推送）
 └── node_modules/
 ```
 
 ---
 
-## 六、现有文章列表
+## 六、现有文章
 
-1. `hello-world.md` — 默认欢迎文章
-2. `操作指南.md` — 操作指南
-3. `示波器学习笔记1.md` — 采集板与触发机制
-4. `示波器学习笔记2.md` — 处理板多板汇聚与传输链路
+1. `hello-world.md`
+2. `操作指南.md`
+3. `示波器学习笔记1.md`
+4. `示波器学习笔记2.md`
 5. `示波器学习笔记3.md`
 
-所有文章 Front-matter 格式：
-```yaml
----
-title: 标题
-date: YYYY-MM-DD HH:mm:ss
-tags: [标签1, 标签2]
----
-```
-
 ---
 
-## 七、图片管理 ✅（已配置 VS Code Paste Image）
+## 七、图片管理 ✅
 
-### 当前方案：VS Code Paste Image 插件
-- 插件：`mushan.vscode-paste-image` v1.0.4（已安装）
-- 配置文件：`.vscode/settings.json`
-- 图片保存路径：`source/images/`（自动）
-- 图片命名规则：`{当前文件名}_{序号}.png`（如 `示波器学习笔记2_1.png`）
-- Markdown 引用格式：`![image](/images/示波器学习笔记2_1.png)`（自动插入）
+### VS Code：Ctrl+Alt+V 粘贴图片
+- 插件：`mushan.vscode-paste-image` v1.0.4
+- 图片自动存到 `source/images/`，引用 `/images/xxx.png`
 
-### 使用方法
-1. 在 VS Code 中打开 Markdown 文章，截好图或复制图片到剪贴板
-2. 按 **Ctrl+Alt+V**，图片自动保存到 `source/images/`，Markdown 引用自动插入光标位置
-3. 照常 `hexo generate && hexo deploy` 发布，图片随文章一起上线
-
-### 插件配置详情
-```json
-// .vscode/settings.json
-{
-  "pasteImage.path": "${projectRoot}/source/images",      // 图片保存到 source/images/
-  "pasteImage.basePath": "${projectRoot}/source",          // 基础路径
-  "pasteImage.prefix": "/images/",                         // 生成引用时使用 /images/ 前缀
-  "pasteImage.namePrefix": "${currentFileNameWithoutExt}_",// 文件名前缀=当前文章名
-  "pasteImage.insertPattern": "![${imageFileNameWithoutExt}](${imageFilePath})"
-}
-```
-
-### 图片在网站上的访问路径
-图片存在 `source/images/` → `hexo generate` 后复制到 `public/images/` → 部署后可通过 `https://mumutingyun.site/images/xxx.png` 访问，**完全能正常显示**。
+### Obsidian：Ctrl+V 粘贴图片
+- 通过镜像目录方案（`sync-obsidian.bat`）
 
 ---
 
 ## 八、Obsidian 编辑集成 ✅
 
-### 概述
-Obsidian（Windows 客户端）可直接将 `source/` 目录作为 Vault 打开，编辑体验优于 VS Code。
+### 首次设置
+1. 双击 `sync-obsidian.bat pull` → 初始化 `D:\obsidian\obsidian-vault\`
+2. Obsidian → Open folder as vault → 选择 `D:\obsidian\obsidian-vault`
 
-### 打开方式
-1. 打开 Obsidian → 点击左下角 "Open folder as vault" → Open
-2. 在地址栏输入：`\\wsl.localhost\Ubuntu\home\wsluser\blog\source`
-3. 点击 "Open" 即可看到所有文章
-
-### 已预配置项（`.obsidian/app.json`）
-- **链接格式**：标准 Markdown 链接（`[text](path)`），不使用 `[[wikilinks]]`，Hexo 完全兼容
-- **图片路径**：粘贴图片自动保存到 `source/images/`，引用路径为 `/images/xxx.png`
-- **默认编辑模式**：源码模式（兼容 Front-matter）
-
-### 粘贴图片
-Obsidian 里截图/复制图片 → **Ctrl+V** 粘贴，图片自动进入 `source/images/`，引用格式与 Hexo 一致。
-
-### 一键部署
-项目根目录下有 `deploy.bat` 脚本，Obsidian 里写完笔记后，两种方式部署：
-
-**方式 A：双击运行**
-- 在文件资源管理器中进入 `\\wsl.localhost\Ubuntu\home\wsluser\blog\`
-- 双击 `deploy.bat`
-
-**方式 B：Obsidian 内一键部署（推荐）**
-1. 在 Obsidian 设置 → Community plugins → 关闭 Safe mode
-2. 搜索并安装 **Shell Commands** 插件
-3. 插件设置 → New command → Shell command
-4. 填入：`cmd.exe /c "\\wsl.localhost\Ubuntu\home\wsluser\blog\deploy.bat"`
-5. 勾选 "Show output" 和 "Open output in new tab"
-6. 可绑定快捷键（如 Ctrl+Shift+D），或在命令面板中运行
+### 日常写作
+```
+Obsidian 写笔记（Ctrl+V 贴图）
+    ↓
+双击 sync-obsidian.bat push
+    ↓
+自动同步到 WSL → git push → Cloudflare 构建
+    ↓
+1-2 分钟后网站更新
+```
 
 ---
 
-## 九、管理后台（Decap CMS / hexo-admin）【备用】
+## 九、发布方式
 
-### 方案一：hexo-admin（本地）
-- 插件已安装：`hexo-admin`
-- 启动 `hexo server` 后，访问 `http://localhost:4000/admin` 即可使用
-- 支持在线编辑文章、管理 Front-matter
-- 图片上传：需要额外配置（目前未配置）
-
-### 方案二：Decap CMS（线上 Git-based）
-- **入口文件**: `source/admin/index.html`（由 `skip_render: "admin/*"` 保护）
-- **配置文件**: `source/updates/config.yml`（内容同 `d:\WSL\admin-config.yml`）
-- **配置要点**:
-  - 后端：GitHub 仓库 `mumutingyun/mumutingyun.github.io`，分支 `main`
-  - 媒体文件路径：`source/images`，公开路径 `/images`
-  - 集合：`posts`（文章），新建文件命名格式 `YYYY-MM-DD-slug.md`
-- Decap CMS 的图片上传功能依赖 GitHub 后端——上传图片直接在浏览器中提交到 GitHub 仓库，无需本地操作
+| 方式 | 操作 |
+|------|------|
+| VS Code + Git | `git add -A && git commit -m "更新" && git push origin main` |
+| 双击 bat | 双击 `deploy.bat` 或 `sync-obsidian.bat push` |
+| 手机 CMS | 浏览器打开 `https://mumutingyun.site/admin/` |
 
 ---
 
@@ -206,116 +130,66 @@ Obsidian 里截图/复制图片 → **Ctrl+V** 粘贴，图片自动进入 `sour
 
 ```bash
 cd /home/wsluser/blog
-
-# 创建新文章
-hexo new "文章标题"           # 在 source/_posts/ 生成新 .md 文件
-
-# 本地预览 (http://localhost:4000)
-hexo server
-hexo server --drafts          # 包含草稿
-
-# 清理 + 生成
-hexo clean && hexo generate
-
-# 部署到 GitHub Pages
-hexo deploy
-
-# 一条龙
-hexo clean && hexo generate && hexo deploy
+hexo new "文章标题"                # 新文章
+hexo server                        # 本地预览 http://localhost:4000
+git add -A && git commit -m "x" && git push origin main   # 发布
 ```
 
 ---
 
 ## 十一、环境信息
 
-- **操作系统**: Windows 10 + WSL (Ubuntu)
+- **OS**: Windows 10 + WSL (Ubuntu)
 - **WSL 路径**: `\\wsl.localhost\Ubuntu\home\wsluser\blog`
-- **Windows 可访问路径**: `d:\WSL\` 下有部分辅助文件（admin-config.yml、admin-index.html 等）
-- **Node.js / npm**: 已安装于 WSL 内
+- **Windows 参考路径**: `d:\WSL\`
 
 ---
 
 ## 十二、新电脑部署指南 🆕
 
-> 当你换电脑后，按以下步骤 30 分钟内恢复整个写作+发布系统。
-
-### 前置条件
-- Windows 10/11 系统
-- 网络能访问 GitHub
-
-### 步骤一：安装 WSL + Ubuntu
+### 1. 安装 WSL + Ubuntu
 ```powershell
-# 在 PowerShell（管理员）中运行：
 wsl --install -d Ubuntu
 ```
-安装完成后重启电脑，首次启动 Ubuntu 时会提示创建用户名和密码。
 
-### 步骤二：安装 Node.js（在 WSL Ubuntu 中）
+### 2. 安装 Node.js（WSL 内）
 ```bash
 curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt-get install -y nodejs
-node -v   # 确认版本 >= 18
 ```
 
-### 步骤三：安装 Git 并克隆博客源码
+### 3. 克隆博客源码
 ```bash
-# 在 WSL Ubuntu 中：
 sudo apt-get install -y git
-
-# 配置 GitHub SSH（必须，否则无法 push）
 ssh-keygen -t ed25519 -C "your_email@example.com"
-cat ~/.ssh/id_ed25519.pub
-# ↑ 复制输出内容，添加到 GitHub → Settings → SSH and GPG keys → New SSH key
-
-# 验证 SSH
-ssh -T git@github.com    # 看到 "Hi mumutingyun!" 即成功
-
-# 克隆博客源码
-cd ~
-git clone git@github.com:mumutingyun/mumutingyun.github.io.git blog
-cd ~/blog
-npm install
+cat ~/.ssh/id_ed25519.pub   # 添加到 GitHub SSH keys
+ssh -T git@github.com
+cd ~ && git clone git@github.com:mumutingyun/mumutingyun.github.io.git blog
+cd ~/blog && npm install
+git config user.name "mumutingyun"
+git config user.email "3194491988@qq.com"
 ```
 
-### 步骤四：配置 Git 部署权限
-`_config.yml` 中的部署仓库使用 HTTPS + Token，需要更新 Token（旧的已失效）：
-
+### 4. 验证
 ```bash
-# 在 GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
-# 生成新 Token，勾选 "repo" 权限，复制 Token 值
-
-# 更新 _config.yml 中的 deploy.repo：
-# 将 https://...github.com/... 改为 https://<你的用户名>:<新Token>@github.com/mumutingyun/mumutingyun.github.io.git
+git add -A && git commit -m "测试" && git push origin main
+# 1-2 分钟后访问 https://mumutingyun.site
 ```
 
-### 步骤五：验证部署
-```bash
-cd ~/blog
-hexo clean && hexo generate && hexo deploy
-```
-访问 `https://mumutingyun.site` 确认更新成功。
+### 5. VS Code（Windows 端）
+- Open Folder → `\\wsl.localhost\Ubuntu\home\$USER\blog`
+- 安装 `mushan.vscode-paste-image`（配置已自带）
 
-### 步骤六：安装 VS Code（Windows 端）
-1. 下载安装 [VS Code](https://code.visualstudio.com/)
-2. 打开 VS Code → File → Open Folder → 输入 `\\wsl.localhost\Ubuntu\home\$USER\blog`
-3. 安装 Paste Image 插件：`Ctrl+Shift+X` → 搜索 `mushan.vscode-paste-image` → Install
-   - 配置已在 `.vscode/settings.json` 中（克隆时自带），无需手动配置
-
-### 步骤七（可选）：安装 Obsidian
-1. 下载安装 [Obsidian](https://obsidian.md/)（Windows 版）
-2. 打开 Obsidian → Open folder as vault → 输入 `\\wsl.localhost\Ubuntu\home\$USER\blog\source`
-3. 配置已在 `source/.obsidian/` 中（克隆时自带），无需手动配置
-4. 安装 Shell Commands 插件并配置一键部署（详见第八章）
-
-### 补充：部署脚本
-项目根目录下的 `deploy.bat` 可在 Windows 资源管理器中双击运行，自动通过 WSL 执行部署。新电脑上路径不变则无需修改。
+### 6. Obsidian（可选）
+- 双击 `sync-obsidian.bat pull`
+- Open vault → `D:\obsidian\obsidian-vault`
 
 ---
 
-## 十三、待解决问题 / TODO
+## 十三、待解决问题
 
-1. [x] ~~图片粘贴~~ → **已通过 VS Code Paste Image 插件解决**，Ctrl+Alt+V 直接粘贴截图
-2. [x] ~~Obsidian 集成~~ → 已配置，详见第八章
+1. [x] ~~图片粘贴~~ → VS Code Paste Image + Obsidian
+2. [x] ~~Obsidian 集成~~ → 镜像目录方案
 3. [ ] Cloudflare 缓存/SSL 配置确认
-4. [ ] 主题功能增强（评论系统、暗色模式等）
+4. [ ] 主题功能增强
 5. [ ] 移动端响应式优化

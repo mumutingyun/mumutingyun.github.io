@@ -91,7 +91,7 @@ hexo server
 
 ### 发布到线上
 
-**不使用 `hexo deploy`**，而是用 Git 直接推送源码，让 Cloudflare Pages 自动构建：
+**现在不再使用 `hexo deploy`**，而是用 Git 直接推送源码，让 Netlify 自动构建：
 
 ```bash
 git add -A
@@ -99,21 +99,23 @@ git commit -m "描述你改了什么"
 git push origin main
 ```
 
-推送后 Cloudflare Pages 会自动检测变更，自己执行 `hexo generate` 并部署上线（约 1-2 分钟生效）。
+推送后 Netlify 会自动检测变更，自己执行 `hexo generate` 并部署上线（约 1-2 分钟生效）。
 
 ### 为什么不用 `hexo deploy` 了？
 
-Cloudflare Pages 需要的是**源码**，它在服务器上自己执行 `hexo generate`：
+之前 `hexo deploy` 会把编译后的 HTML 直接推送到 GitHub，Netlify 拿到 HTML 不知道怎么构建，导致部署失败。
+
+现在改为推送**源码**到 GitHub，Netlify 在服务器上自己执行 `hexo generate`，流程正确：
 
 ```
 你的电脑 ──git push──→ GitHub（源码：.md、_config.yml、主题...）
-                               ↓
-                     Cloudflare Pages 自动执行 hexo generate → 部署上线
+                              ↓
+                        Netlify 自动执行 hexo generate → 部署上线
 ```
 
 ### `hexo generate` 还要用吗？
 
-**发布上线不需要**，Cloudflare Pages 会替你执行。
+**发布上线不需要**，Netlify 会替你执行。
 
 **本地预览时需要**：
 ```bash
@@ -123,7 +125,7 @@ hexo server     # 启动预览 http://localhost:4000
 
 或者直接 `hexo server`（它会自动生成后再启动）。
 
-> 📱 **手机 CMS 例外**：CMS 点"发布"会自动 commit + push 到 GitHub，Cloudflare Pages 自动构建，全程无需手动操作。
+> 📱 **手机 CMS 例外**：CMS 点"发布"会自动 commit + push 到 GitHub，Netlify 自动构建，全程无需手动操作。
 
 ---
 
@@ -149,7 +151,7 @@ git add -A && git commit -m "删除文章" && git push origin main
 在左侧文件资源管理器找到 `source/_posts/`，右键文件 → Delete，然后终端执行 `git add -A && git commit -m "删除文章" && git push origin main`。
 
 **方式 3：手机 CMS 删除**
-登录 `https://mumutingyun.site/admin/`，进入文章后点删除（自动 commit + push，Cloudflare Pages 自动构建）。
+登录 `https://mumutingyun.netlify.app/admin/`，进入文章后点删除（自动 commit + push，Netlify 自动部署）。
 
 ---
 
@@ -157,10 +159,11 @@ git add -A && git commit -m "删除文章" && git push origin main
 
 1. 打开手机浏览器，访问：
    ```
+   https://mumutingyun.netlify.app/admin/  或
    https://mumutingyun.site/admin/
    ```
 
-2. 点击 **"Login with GitHub"**
+2. 点击 **"Login with Netlify Identity"**
 
 3. 点击 **"Continue with GitHub"**
 
@@ -217,7 +220,9 @@ git remote add origin https://github.com/mumutingyun/mumutingyun.github.io.git
 2. **电脑端 `hexo deploy` 后**，CMS 中也能看到最新内容
 3. **图片上传**：CMS 上传的图片在 `source/images/`，引用路径为 `/images/xxx.jpg`
 4. **不要同时两边编辑同一篇文章**，会产生 Git 冲突
-5. CMS 登录需要 GitHub OAuth。如需配置，Client ID 和 Client Secret 见 `d:\WSL\client id和client secret.txt`
+5. 如果还没在 Netlify Identity 中添加 GitHub OAuth，选中 **"Let me use my own OAuth app credentials"**，填入：
+   - Client ID: `Ov23li8fcEG8q7qu3CDP`
+   - Client Secret: `77292aff48c4e4f657a84389387617f7b1a50eaf`
 
 ---
 
@@ -225,9 +230,12 @@ git remote add origin https://github.com/mumutingyun/mumutingyun.github.io.git
 
 - [ ] GitHub 仓库 `mumutingyun.github.io` 已创建
 - [ ] 代码已 push 到 GitHub
-- [ ] Cloudflare Pages 已连接仓库，构建命令 `hexo generate`，发布目录 `public`
-- [ ] `https://mumutingyun.site` 能正常访问
-- [ ] `https://mumutingyun.site/admin/` 能打开 CMS 登录页
+- [ ] Netlify 已连接仓库，构建命令 `hexo generate`，发布目录 `public`
+- [ ] Netlify Identity 已启用
+- [ ] Git Gateway 已启用（Netlify Identity → Services）
+- [ ] GitHub OAuth 已配置为外部提供者
+- [ ] `https://mumutingyun.netlify.app` 能正常访问
+- [ ] `https://mumutingyun.netlify.app/admin/` 能打开 CMS 登录页
 
 ---
 
