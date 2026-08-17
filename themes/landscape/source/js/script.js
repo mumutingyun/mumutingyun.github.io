@@ -169,6 +169,61 @@
     $('.fancybox').fancybox();
   }
 
+  // Dark Mode Toggle
+  var $darkModeToggle = $('#dark-mode-toggle');
+  var $darkModeIcon = $darkModeToggle.find('.fa');
+
+  // Load saved preference
+  if (localStorage.getItem('darkMode') === 'true') {
+    $('body').addClass('dark-mode');
+    $darkModeIcon.removeClass('fa-moon-o').addClass('fa-sun-o');
+  }
+
+  // Helper: force dark mode styles on article blocks via inline styles
+  function applyArticleDarkMode(enable) {
+    $('.article-inner').each(function() {
+      if (enable) {
+        this.style.setProperty('background', '#161b22', 'important');
+        this.style.setProperty('border-color', '#30363d', 'important');
+        this.style.setProperty('box-shadow', '1px 2px 3px rgba(0,0,0,0.3)', 'important');
+      } else {
+        this.style.removeProperty('background');
+        this.style.removeProperty('border-color');
+        this.style.removeProperty('box-shadow');
+      }
+    });
+  }
+
+  // Apply on load if dark mode is active
+  if ($('body').hasClass('dark-mode')) {
+    applyArticleDarkMode(true);
+  }
+
+  // Toggle on click
+  $darkModeToggle.on('click', function() {
+    $('body').toggleClass('dark-mode');
+    var isDark = $('body').hasClass('dark-mode');
+    localStorage.setItem('darkMode', isDark);
+    applyArticleDarkMode(isDark);
+    if (isDark) {
+      $darkModeIcon.removeClass('fa-moon-o').addClass('fa-sun-o');
+    } else {
+      $darkModeIcon.removeClass('fa-sun-o').addClass('fa-moon-o');
+    }
+    // Re-initialize mermaid with appropriate theme
+    if (typeof mermaid !== 'undefined') {
+      mermaid.initialize({ startOnLoad: false, theme: isDark ? 'dark' : 'default' });
+      // Re-render mermaid diagrams
+      $('.mermaid').each(function() {
+        var $this = $(this);
+        var code = $this.data('original-code') || $this.text();
+        $this.data('original-code', code);
+        $this.removeAttr('data-processed').empty().text(code);
+      });
+      mermaid.init(undefined, '.mermaid');
+    }
+  });
+
   // Mobile nav
   var $container = $('#container'),
     isMobileNavAnim = false,
