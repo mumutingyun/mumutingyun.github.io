@@ -210,18 +210,8 @@
     } else {
       $darkModeIcon.removeClass('fa-sun-o').addClass('fa-moon-o');
     }
-    // Re-initialize mermaid with appropriate theme
-    if (typeof mermaid !== 'undefined') {
-      mermaid.initialize({ startOnLoad: false, theme: isDark ? 'dark' : 'default' });
-      // Re-render mermaid diagrams
-      $('.mermaid').each(function() {
-        var $this = $(this);
-        var code = $this.data('original-code') || $this.text();
-        $this.data('original-code', code);
-        $this.removeAttr('data-processed').empty().text(code);
-      });
-      mermaid.init(undefined, '.mermaid');
-    }
+    // Note: Mermaid diagrams keep their original theme.
+    // Refresh the page to apply the correct mermaid theme.
   });
 
   // Mobile nav

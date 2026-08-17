@@ -48,7 +48,8 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       if (typeof mermaid !== 'undefined') {
-        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+        var isDark = document.body.classList.contains('dark-mode');
+        mermaid.initialize({ startOnLoad: true, theme: isDark ? 'dark' : 'default' });
       }
     });
   </script>
